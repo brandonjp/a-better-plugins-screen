@@ -77,8 +77,11 @@
           $rowActionsDiv.prepend(`<div>${k}: ${v}</div>`);
         });
       }
-      
-    });
+
+    }); // END allRows.each
+
+    // Go back to allRows and re-collect action spans, add separators 
+    $allRows.find('td.plugin-title div.row-actions span + span').prepend(' | ');
 
   });
 })(jQuery);
