@@ -21,3 +21,7 @@ node_modules/
 *.log
 *.sql
 *.sqlite
+
+# be ignorant to ignorant ds_store files
+**/.DS_Store
+**/._DS_Store
