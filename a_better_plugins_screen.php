@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: A Better Plugins Screen
-Plugin URI: http://brandonjp.com
+Plugin URI: https://github.com/brandonjp/a-better-plugins-screen
 Description: On the WordPress Admin Plugins Screen, the links under each plugin are in a random order. This always puts 'Deactivate' first and places a 'Settings' link second (if it can find one). There are no options. Activate the plugin to enable. Deactivate to disable. 
 Version: 0.1.3
 Author: Brandon Pfeiffer
