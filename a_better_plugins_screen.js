@@ -1,7 +1,7 @@
 (function ($) {
-  'use strict';
+  // 'use strict';
 
-  $(window).load(function () {
+  $(window).on('load',function () {
 
     // Optional debug output we'll use later, if desired
     let debugOn = false;
@@ -36,10 +36,10 @@
       let settingsHref = $settingsLink.find('a').attr('href');
       // If there's no existing Settings link, try to locate & build one
       if (!settingsHref || !settingsHref.length) {
-        console.log(`${name} does not have a Settings link - ${slug}`);
+        console.log(`${name} does not already have a Settings link. Looking for a match with: ${slug}`);
         // First, look directly for the slug in the admin menu
         settingsHref = jQuery('ul#adminmenu').find(`a[href*="page=${slug}"]`).attr('href');
-        console.warn(slug, settingsHref);
+        // console.warn(slug, settingsHref);
         // If we didn't find a url, try matching the pluing Name/Title
         if (!settingsHref || !settingsHref.length) {
           settingsHref = jQuery('ul#adminmenu').find(`a:contains("${name}")`).attr('href');
@@ -82,6 +82,6 @@
 
     // Go back to allRows and re-collect action spans, add separators 
     $allRows.find('td.plugin-title div.row-actions span + span').prepend(' | ');
-
+    // console.log(jQuery.migrateWarnings);
   });
 })(jQuery);
