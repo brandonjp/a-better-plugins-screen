@@ -1,8 +1,7 @@
 (function ($) {
   // 'use strict';
 
-  $(window).on('load',
-    function () {
+  $(window).on('load',function () {
 
     // Optional debug output we'll use later, if desired
     let debugOn = false;
@@ -42,8 +41,10 @@
             stringParts.forEach(function(l,i){
               let withHyphens = l.replaceAll('_','-');
               stringParts.push(withHyphens);
+
               let withUnderscores = l.replaceAll('-','_');
               stringParts.push(withUnderscores);
+
               let withoutSeparators = l.replaceAll('-','').replaceAll('_','');
               stringParts.push(withoutSeparators);
             });
@@ -104,10 +105,10 @@
         // If we found a url for the Settings page, build the link
         if (settingsHref && settingsHref.length) {
           if (debugOn) console.log(`[${name}] Found settings link at: ${settingsHref}`);
-          $settingsLink = jQuery(`<span class="settings"><a href="${settingsHref}">Settings ⚙️</a></span>`);
+          $settingsLink = jQuery(`<span class="settings"><a href="${settingsHref}">Settings Screen</a></span>`);
         } else {
           if (debugOn) console.log(`[${name}] Could not find a Settings link for ${plug}.`);
-          $settingsLink = jQuery(`<span class="settings">No Settings Link Found</span>`);
+          $settingsLink = jQuery(`<span class="settings">Settings Not Found</span>`);
         }
       }
       // If there is now a Settings link, move it to the front (it will be bumped to second place in a moment)

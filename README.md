@@ -9,6 +9,8 @@ So, this plugin creates "A Better Plugins Screen" by always putting 'Deactivate'
 
 There are no additional options. Activate the plugin to enable. Deactivate to disable. 
 
+![PixelSnap 2021-10-04 at 21 28 57@2x](https://user-images.githubusercontent.com/199599/135952335-5eb98ae3-9054-4081-af10-89376740b492.png)
+
 Note: Some plugins don't use their 'slug' or plugin name as their menu link title, so I've created a rudimentary dictionary at the top of the JS file to address these cases. You can create a pull request to contribute others. 
 
 
