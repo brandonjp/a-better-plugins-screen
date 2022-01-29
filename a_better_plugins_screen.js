@@ -1,7 +1,8 @@
 (function ($) {
-  'use strict';
+  // 'use strict';
 
-  $(window).load(function () {
+  $(window).on('load',
+    function () {
 
     // Optional debug output we'll use later, if desired
     let debugOn = false;
@@ -14,8 +15,52 @@
       'varnish-http-purge': 'admin.php?page=varnish-page'
     }
 
+    let scanForPluginSettings = function scanForPluginSettings(scanType,plugData,debugOn){
+      let returnValue;
+      let $adminMenu = jQuery('ul#adminmenu');
+      if (scanType==='custom') {
+        if (debugOn) console.log(`[${plugData.name}] Looking for a match in custom locations.`);
+        returnValue = betterLinks[plugData.slug];
+      }
+      if (scanType==='name') {
+        if (debugOn) console.log(`[${plugData.name}] Looking for a match with name: ${plugData.name}`);
+        returnValue = $adminMenu.find(`a:contains("${plugData.name}")`).attr('href');
+      }
+      if (scanType==='slug') {
+        if (debugOn) console.log(`[${plugData.name}] Looking for a match with slug: ${plugData.slug}`);
+        returnValue = $adminMenu.find(`a[href*="${plugData.slug}"]`).attr('href');
+      }
+      if (scanType==='plug') {
+        if (debugOn) console.log(`[${plugData.name}] Looking for a match with plugin file: ${plugData.plug}`);
+        returnValue = $adminMenu.find(`a[href*="${plugData.plug}"]`).attr('href');
+        // check for variations
+        if (!returnValue || !returnValue.length) {
+          // take a plugin path 'this-folder/this-file.php' and return array ['this-file','this-folder']
+          let stringParts = plugData.plug.replaceAll('.php','').split('/');
+          if (stringParts && stringParts.length) {
+            // start by amending the array with other possible variations
+            stringParts.forEach(function(l,i){
+              let withHyphens = l.replaceAll('_','-');
+              stringParts.push(withHyphens);
+              let withUnderscores = l.replaceAll('-','_');
+              stringParts.push(withUnderscores);
+              let withoutSeparators = l.replaceAll('-','').replaceAll('_','');
+              stringParts.push(withoutSeparators);
+            });
+            // then check each variation in the array for a match
+            stringParts.forEach(function(ll,ii){
+              if (debugOn) console.log(`[${plugData.name}] Looking for a match with string: ${ll}`);
+              returnValue = $adminMenu.find(`a[href*="${ll}"]`).attr('href');
+              if (returnValue) return returnValue;
+            });
+          }
+        }
+      }
+      return returnValue;
+    }
+
     // Collect all active plugin rows
-    let $allRows = jQuery('table.plugins #the-list tr.active');
+    let $allRows = jQuery('table.plugins #the-list tr.active').not('.plugin-update-tr');
     $allRows.each((_i, l) => {
       let $thisRow = jQuery(l);
       // Slug we'll use to find the settings page
@@ -34,24 +79,35 @@
       // The existing Settings link, if any
       let $settingsLink = $rowActionsDiv.find('span:contains("Settings")');
       let settingsHref = $settingsLink.find('a').attr('href');
+      let plugData = {
+        'name': name,
+        'slug': slug,
+        'plug': plug
+      };
       // If there's no existing Settings link, try to locate & build one
       if (!settingsHref || !settingsHref.length) {
-        console.log(`${name} does not have a Settings link - ${slug}`);
+        console.log(`Found: ${name}, ${slug}, ${plug}`);
+        console.log(`[${name}] No default Settings link found. Looking for matches.`);
+        
         // First, look directly for the slug in the admin menu
-        settingsHref = jQuery('ul#adminmenu').find(`a[href*="page=${slug}"]`).attr('href');
-        console.warn(slug, settingsHref);
-        // If we didn't find a url, try matching the pluing Name/Title
-        if (!settingsHref || !settingsHref.length) {
-          settingsHref = jQuery('ul#adminmenu').find(`a:contains("${name}")`).attr('href');
-        }
+        settingsHref = scanForPluginSettings('slug',plugData,debugOn);
+
+        // If we didn't find a url, try matching the plugin file
+        if (!settingsHref || !settingsHref.length) settingsHref = scanForPluginSettings('plug',plugData,debugOn);
+
+        // If we didn't find a url, try matching the plugin Name/Title
+        if (!settingsHref || !settingsHref.length) settingsHref = scanForPluginSettings('name',plugData,debugOn);
+
         // If we still didn't find a url, try looking up the slug in the manual dictionary
-        if (!settingsHref || !settingsHref.length) {
-          settingsHref = betterLinks[slug];
-        }
+        if (!settingsHref || !settingsHref.length) settingsHref = scanForPluginSettings('custom',plugData,debugOn);
+
         // If we found a url for the Settings page, build the link
         if (settingsHref && settingsHref.length) {
-          console.log(`${name} has a Settings link at: ${settingsHref}`);
-          $settingsLink = jQuery(`<span class="settings"><a href="${settingsHref}">Settings</a></span>`);
+          if (debugOn) console.log(`[${name}] Found settings link at: ${settingsHref}`);
+          $settingsLink = jQuery(`<span class="settings"><a href="${settingsHref}">Settings ⚙️</a></span>`);
+        } else {
+          if (debugOn) console.log(`[${name}] Could not find a Settings link for ${plug}.`);
+          $settingsLink = jQuery(`<span class="settings">No Settings Link Found</span>`);
         }
       }
       // If there is now a Settings link, move it to the front (it will be bumped to second place in a moment)
@@ -82,6 +138,7 @@
 
     // Go back to allRows and re-collect action spans, add separators 
     $allRows.find('td.plugin-title div.row-actions span + span').prepend(' | ');
+    // console.log(jQuery.migrateWarnings);
 
   });
 })(jQuery);
