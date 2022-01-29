@@ -3,7 +3,7 @@
 Plugin Name: A Better Plugins Screen
 Plugin URI: https://github.com/brandonjp/a-better-plugins-screen
 Description: On the plugins admin screen, this puts 'Deactivate' first and places a 'Settings' link second (if it can find one) under each active plugin. There are no options. Activate the plugin to enable. Deactivate to disable. 
-Version: 0.1.5
+Version: 0.1.6
 Author: Brandon Pfeiffer
 Author URI: http://brandonjp.com
 
@@ -20,7 +20,7 @@ function a_better_plugins_screen($screen)
     if(!function_exists('get_plugin_data')){
         require_once(ABSPATH.'wp-admin/includes/plugin.php');
     }
-    $plugin_data = get_plugin_data( __FILE__ );
+    $plugin_data = get_plugin_data(__FILE__);
     $slug = 'a_better_plugins_screen';
     $js_file = plugin_dir_url(__FILE__) . $slug . '.js';
 

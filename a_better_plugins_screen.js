@@ -105,10 +105,10 @@
         // If we found a url for the Settings page, build the link
         if (settingsHref && settingsHref.length) {
           if (debugOn) console.log(`[${name}] Found settings link at: ${settingsHref}`);
-          $settingsLink = jQuery(`<span class="settings"><a href="${settingsHref}">Settings Screen</a></span>`);
+          $settingsLink = jQuery(`<span class="settings a-better-plugins-screen-link"><a href="${settingsHref}">Settings</a></span>`);
         } else {
           if (debugOn) console.log(`[${name}] Could not find a Settings link for ${plug}.`);
-          $settingsLink = jQuery(`<span class="settings">Settings Not Found</span>`);
+          $settingsLink = jQuery(`<span class="settings a-better-plugins-screen-link">No Settings Found</span>`);
         }
       }
       // If there is now a Settings link, move it to the front (it will be bumped to second place in a moment)
