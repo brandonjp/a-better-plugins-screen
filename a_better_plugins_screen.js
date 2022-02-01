@@ -14,12 +14,26 @@
       'varnish-http-purge': 'admin.php?page=varnish-page'
     }
 
+    // create a jquery method of :contains that is case-insensitive
+    // from https://stackoverflow.com/a/8747204/264601 and https://stackoverflow.com/a/8747170/264601
+    jQuery.expr[':'].icontains = function(a, i, m) {
+      return jQuery(a).text().toUpperCase()
+          .indexOf(m[3].toUpperCase()) >= 0;
+    };
+
+    // function we'll use for various scanning methods
     let scanForPluginSettings = function scanForPluginSettings(scanType,plugData,debugOn){
       let returnValue;
       let $adminMenu = jQuery('ul#adminmenu');
       if (scanType==='custom') {
         if (debugOn) console.log(`[${plugData.name}] Looking for a match in custom locations.`);
         returnValue = betterLinks[plugData.slug];
+      }
+      if (scanType==='description') {
+        // Occasionally a developer will put their own Settings link in the plugin description
+        // right now we're only looking for a link that contains the text string 'settings'
+        if (debugOn) console.log(`[${plugData.name}] Looking for a match in the description column.`);
+        returnValue = plugData['row'].find(`a:icontains("settings")`).attr('href');
       }
       if (scanType==='name') {
         if (debugOn) console.log(`[${plugData.name}] Looking for a match with name: ${plugData.name}`);
@@ -83,12 +97,13 @@
       let plugData = {
         'name': name,
         'slug': slug,
-        'plug': plug
+        'plug': plug,
+        'row' : $thisRow
       };
       // If there's no existing Settings link, try to locate & build one
       if (!settingsHref || !settingsHref.length) {
-        console.log(`Found: ${name}, ${slug}, ${plug}`);
-        console.log(`[${name}] No default Settings link found. Looking for matches.`);
+        if (debugOn) console.log(`Found: ${name}, ${slug}, ${plug}`);
+        if (debugOn) console.log(`[${name}] No default Settings link found. Looking for matches.`);
         
         // First, look directly for the slug in the admin menu
         settingsHref = scanForPluginSettings('slug',plugData,debugOn);
@@ -98,6 +113,9 @@
 
         // If we didn't find a url, try matching the plugin Name/Title
         if (!settingsHref || !settingsHref.length) settingsHref = scanForPluginSettings('name',plugData,debugOn);
+
+        // If we still didn't find a url, try looking in the description column
+        if (!settingsHref || !settingsHref.length) settingsHref = scanForPluginSettings('description',plugData,debugOn);
 
         // If we still didn't find a url, try looking up the slug in the manual dictionary
         if (!settingsHref || !settingsHref.length) settingsHref = scanForPluginSettings('custom',plugData,debugOn);
