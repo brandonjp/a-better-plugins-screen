@@ -4,7 +4,7 @@
   $(window).on('load',function () {
 
     // Optional debug output we'll use later, if desired
-    let debugOn = true;
+    let debugOn = false;
     
     // Some plugins have names that don't match their slugs/urls
     // Here is a manual dictionary for matching those
