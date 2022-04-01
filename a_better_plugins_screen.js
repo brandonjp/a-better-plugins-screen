@@ -5,13 +5,13 @@
 
     // Optional debug output we'll use later, if desired
     let debugOn = false;
+    let allowToggle = true;
     
     // Some plugins have names that don't match their slugs/urls
     // Here is a manual dictionary for matching those
     // Add new ones in alphabetical order as `slug:url`
     let betterLinks = {
       'peters-login-redirect': 'options-general.php?page=wplogin_redirect.php',
-      'user-access-manager':'admin.php?page=uam_user_group',
       'varnish-http-purge': 'admin.php?page=varnish-page'
     }
 
@@ -184,19 +184,29 @@
       // but I don't think they actually matter - so skipping for now
 
       // Add some debug info to each row, if enabled
-      if (debugOn) {
+      if (debugOn || allowToggle) {
         let debugInfo = {
           'Name': name,
           'Slug': slug,
           'File': file,
           'Settings': settingsHref,
         };
+        let $debugInfoDiv = jQuery('<div class="abps_debug_info"></div>');
         jQuery.each(debugInfo, function (k, v) {
-          $rowActionsDiv.prepend(`<div>${k}: ${v}</div>`);
+          $debugInfoDiv.append(`<div>${k}: ${v}</div>`);
         });
+        $debugInfoDiv.prependTo($rowActionsDiv).hide();
       }
 
     }); // END allRows.each
+
+    if (allowToggle) {
+      let $abpsRow = jQuery('#the-list > tr.active[data-slug="a-better-plugins-screen"][data-plugin="a-better-plugins-screen/a_better_plugins_screen.php"]');
+      $abpsRow.find('.row-actions.visible').append('<span id="toggleInfo">Toggle Infos</span>');
+      jQuery('#toggleInfo').on('click',function(){
+        jQuery('div.abps_debug_info').toggle();
+      });
+    }
 
     // Go back to allRows and re-collect action spans, add separators 
     $allRows.find('td.plugin-title div.row-actions span + span').prepend(' | ');
