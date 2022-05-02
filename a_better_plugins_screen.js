@@ -12,6 +12,7 @@
     // Add new ones in alphabetical order as `slug:url`
     let betterLinks = {
       'peters-login-redirect': 'options-general.php?page=wplogin_redirect.php',
+      'uam_user_group': 'admin.php?page=uam_user_group',
       'varnish-http-purge': 'admin.php?page=varnish-page'
     }
 
