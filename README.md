@@ -16,4 +16,5 @@ Note: Some plugins don't use their 'slug' or plugin name as their menu link titl
 
 ## To-Do
 
-* Use `plugin_action_links_` instead?
+* Look into using: `plugin_action_links_{}` ? - https://bit.ly/37FPvPn
+* Look into adding row actions on plugin screen? - `add_filter( 'post_row_actions'` -- https://bit.ly/3FEbaDW
