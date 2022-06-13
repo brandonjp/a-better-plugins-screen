@@ -94,8 +94,10 @@ jQuery( document ).ready( function( $ ) {
           });
           // remove duplicates from the array
           let stringPartsSet = [...new Set(stringParts)];
-          // then check each variation in the array for a match
-          stringPartsSet.forEach(function(ll,ii){
+          if (debugOn) console.log('stringParts',stringParts);
+          if (debugOn) console.log('stringPartsSet',stringPartsSet);
+          // then check each variation in the array for a match 
+          stringPartsSet.some(function(ll,ii){
             if (debugOn) console.log(`[${plugData.name}] Looking for a match with variation string #${ii}: ${ll}`);
             matchFound = $adminMenu.find(`a[href*="${ll}"]`).attr('href');
             if (matchFound && hostsMatch(matchFound)) {
