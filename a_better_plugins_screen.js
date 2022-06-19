@@ -8,9 +8,33 @@ jQuery( document ).ready( function( $ ) {
   // Here is a manual dictionary for matching those
   // Add new ones in alphabetical order as `slug:url`
   let betterLinks = {
+    // Timely All-in-One Events Calendar By Time.ly Network Inc.
+    // https://wordpress.org/plugins/all-in-one-event-calendar/
+    'all-in-one-event-calendar': 'admin.php?page=timely_signin',
+    // DonDivi Plugins
+    // https://dondivi.com
+    'divimenus':'admin.php?page=dondivi_main_menu',
+    'divimenus-on-media':'admin.php?page=dondivi_main_menu',
+    'divimenus-sharing':'admin.php?page=dondivi_main_menu',
+    'divipasswords':'admin.php?page=dondivi_main_menu',
+    'floating-divimenus':'admin.php?page=dondivi_main_menu',
+    // RSS Aggregator by Feedzy – Powerful WP Autoblogging and News Aggregator By Themeisle
+    // https://wordpress.org/plugins/feedzy-rss-feeds/
+    'feedzy-rss-feeds':'edit.php?post_type=feedzy_imports',
+    // Oxygen Gutenberg Integration By Soflyy
+    // https://oxygenbuilder.com/documentation/gutenberg-client-mode/
+    'oxygen-gutenberg-integration':'admin.php?page=oxygen_vsb_settings&tab=gutenberg',
+    // LoginWP (Formerly Peter's Login Redirect) By LoginWP Team
+    // https://wordpress.org/plugins/peters-login-redirect/
     'peters-login-redirect': 'options-general.php?page=wplogin_redirect.php',
+    // Plainview Protect Passwords By edward_plainview
+    // https://wordpress.org/plugins/plainview-protect-passwords/
     'plainview-protect-passwords': 'options-general.php?page=pv_protect_passwords',
-    'uam_user_group': 'admin.php?page=uam_user_group',
+    // User Access Manager By Alexander Schneider
+    // https://wordpress.org/plugins/user-access-manager/
+    'user-access-manager': 'admin.php?page=uam_user_group',
+    // Proxy Cache Purge By Mika Epstein
+    // https://wordpress.org/plugins/varnish-http-purge/
     'varnish-http-purge': 'admin.php?page=varnish-page'
   }
 
