@@ -2,7 +2,8 @@ jQuery( document ).ready( function( $ ) {
 
   // Optional debug output we'll use later, if desired
   let debugOn = false;
-  let allowToggle = true;
+  let allowToggleInfo = true;
+  let allowToggleOrder = true;
   
   // Some plugins have names that don't match their slugs/urls
   // Here is a manual dictionary for matching those
@@ -56,6 +57,7 @@ jQuery( document ).ready( function( $ ) {
     }
     return (thisHost || '');
   }
+  
   // function to check if the host of a url matches current site
   let hostsMatch = function hostsMatch(urlString){
     let siteHost = window.location.host;
@@ -137,33 +139,75 @@ jQuery( document ).ready( function( $ ) {
     if (hostsMatch(matchFound)) returnValue = matchFound;
     return returnValue;
   }
-
+  
+  // order items based on an attribute
+  let orderItemsBasedOn = function orderItemsBasedOn(dataAttrName){
+    // abps-original-order OR abps-new-order
+    if (dataAttrName) {
+      // Collect all active plugin rows
+      let $allRows = jQuery('table.plugins #the-list tr.active').not('.plugin-update-tr, [data-slug="a-better-plugins-screen"]');
+      $allRows.each((_i, l) => {
+        let $thisRow = jQuery(l);
+        let $td = $thisRow.find('td.plugin-title');
+        let newArray = [];
+        // The existing row actions wrapper
+        let $rowActionsDiv = $td.find('div.row-actions');
+        $rowActionsDiv.find('>span').each((ii, ll) => {
+          let $thisSpan = jQuery(ll);
+          // Remove the " | " pipe separators
+          $thisSpan.html($thisSpan.children());
+          let ord = parseInt($thisSpan.dataAttr(dataAttrName));
+          console.log('ord',parseInt(ord));
+          if (ord >= 0) {
+            newArray[ord] = $thisSpan;
+          } else {
+            newArray[ii+100] = $thisSpan;
+          }
+        });
+        jQuery(newArray).each((ii, ll) => {
+          let $thisSpan = jQuery(ll);
+          $rowActionsDiv.append($thisSpan);
+        });
+      });
+      // Go back to allRows and re-collect action spans, add separators 
+      $allRows.find('td.plugin-title div.row-actions span + span').prepend(' | ');  
+    }
+    return;
+  }
+  
   // Collect all active plugin rows
   let $allRows = jQuery('table.plugins #the-list tr.active').not('.plugin-update-tr');
   $allRows.each((_i, l) => {
     let $thisRow = jQuery(l);
+    let $td = $thisRow.find('td.plugin-title');
     // Slug we'll use to find the settings page
     let slug = $thisRow.data('slug');
     // Plugin path, we probably won't use this
     let file = $thisRow.data('plugin');
     // Name of the plugin
-    let name = $thisRow.find('td.plugin-title strong').text();
+    let name = $td.find('strong').text();
     // The existing row actions wrapper
-    let $rowActionsDiv = $thisRow.find('td.plugin-title div.row-actions');
-    $rowActionsDiv.find('span').each((ii, ll) => {
+    let $rowActionsDiv = $td.find('div.row-actions');
+    $rowActionsDiv.find('>span').each((ii, ll) => {
+      let $thisSpan = jQuery(ll);
       // Remove the " | " pipe separators
-      jQuery(ll).html(jQuery(ll).children());
+      $thisSpan.html($thisSpan.children());
+      // Add data-orig-class=""
+      $thisSpan.dataAttr('abps-original-class',$thisSpan.attr('class'));
+      // Add data-orig-order=""
+      $thisSpan.dataAttr('abps-original-order',ii);
     });
 
     // The existing Settings link, if any
     let $settingsLink = $rowActionsDiv.find('span:contains("Settings")');
-    let settingsHref = $settingsLink.find('a').attr('href');
+    let settingsHref = $settingsLink.find('a').attr('href');    
     let plugData = {
       'name': name,
       'slug': slug,
       'file': file,
       'row' : $thisRow
     };
+    
     // If there's no existing Settings link, try to locate & build one
     if (!settingsHref || !settingsHref.length) {
       if (debugOn) console.log(`Name: ${name}`,`Slug: ${slug}`,`File: ${file}`);
@@ -196,10 +240,12 @@ jQuery( document ).ready( function( $ ) {
         $settingsLink = jQuery(`<span class="settings a-better-plugins-screen-link">No Settings Found</span>`);
       }
     }
+    
     // If there is now a Settings link, move it to the front (it will be bumped to second place in a moment)
     if ($settingsLink.length) {
       $settingsLink.prependTo($rowActionsDiv);
     }
+    
     // The Deactivate link
     let $deactivateLink = $rowActionsDiv.find('span.deactivate');
     // Move the 'Deactivate' link to the front
@@ -207,9 +253,16 @@ jQuery( document ).ready( function( $ ) {
 
     // Maybe we should add back / update the default classes 0,1,2,etc
     // but I don't think they actually matter - so skipping for now
+    
+    // Mark the new ABPS order
+    $rowActionsDiv.find('>span').each((ii, ll) => {
+      let $thisSpan = jQuery(ll);
+      // Add data-abps-new-order=""
+      $thisSpan.dataAttr('abps-new-order',ii);
+    });    
 
     // Add some debug info to each row, if enabled
-    if (debugOn || allowToggle) {
+    if (debugOn || allowToggleInfo) {
       let debugInfo = {
         'Name': name,
         'Slug': slug,
@@ -225,7 +278,8 @@ jQuery( document ).ready( function( $ ) {
 
   }); // END allRows.each
 
-  if (allowToggle) {
+  // Enable a toggle to show plugin info on each row
+  if (allowToggleInfo) {
     let $abpsRow = jQuery('#the-list > tr.active[data-slug="a-better-plugins-screen"][data-plugin="a-better-plugins-screen/a_better_plugins_screen.php"]');
     $abpsRow.find('.row-actions.visible').append('<span id="toggleInfo">Toggle Infos</span>');
     jQuery('#toggleInfo').on('click',function(){
@@ -233,8 +287,41 @@ jQuery( document ).ready( function( $ ) {
     });
   }
 
+  // TODO: Enable a toggle to switch ABPS on/off
+  if (allowToggleOrder) {
+    let $abpsRow = jQuery('#the-list > tr.active[data-slug="a-better-plugins-screen"][data-plugin="a-better-plugins-screen/a_better_plugins_screen.php"]');
+    $abpsRow.find('.row-actions.visible').append('<span><span id="toggleOrder" data-switch-to="abps-original-order" data-current-order="abps-new-order">Switch to Original Order</span></span>');
+    jQuery('#toggleOrder').on('click',function(){
+      let $toggle = jQuery('#toggleOrder');
+      let newText = $toggle.text()=='Switch to Original Order' ? 'Switch to Better Order' : 'Switch to Original Order';
+      let switchTo = $toggle.dataAttr('switch-to');
+      let currentOrder = $toggle.dataAttr('current-order');
+      orderItemsBasedOn(switchTo);
+      $toggle.dataAttr('switch-to',currentOrder);
+      $toggle.dataAttr('current-order',switchTo);
+      $toggle.text(newText);
+    });
+  }
+
   // Go back to allRows and re-collect action spans, add separators 
   $allRows.find('td.plugin-title div.row-actions span + span').prepend(' | ');
   // console.log(jQuery.migrateWarnings);
 
-} );
+});
+
+
+//--------------------------------
+// jQuery dataAttr Plugin
+// re: http://bit.ly/2NDDQ7o && https://stackoverflow.com/a/7262427
+// by default, .attr works with DOM HTML & .data with internal cache
+// this helps keep them in sync
+//--------------------------------
+(function($) {
+  // sets both jQ data-store and dom element's data-attribute
+  // returns/gets only the value from data
+  $.fn.dataAttr = function(get, set) {
+    if (set === undefined) return this.data(get);
+    this.attr('data-' + get, set);
+    return this.data(get, set);
+  };
+}(jQuery));

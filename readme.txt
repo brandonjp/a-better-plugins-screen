@@ -68,6 +68,13 @@ Too complicated? [Create an issue on Github](https://github.com/brandonjp/a-bett
 
 == Changelog ==
 
+= 0.5.0 =
+* add toggle to switch between original and better row action links
+
+= 0.4.1 =
+* add WP Dependency Installer as dependency
+* add Git Updater to allow updates from public git repo
+
 = 0.3.1 =
 * add content and FAQ to readme.txt
 * JS: add comments to the 'betterLinks' object

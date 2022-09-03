@@ -4,7 +4,7 @@ Plugin Name: A Better Plugins Screen
 Plugin URI: https://github.com/brandonjp/a-better-plugins-screen
 GitHub Plugin URI: https://github.com/brandonjp/a-better-plugins-screen
 Description: On the plugins admin screen, this puts 'Deactivate' first and places a 'Settings' link second (if it can find one) under each active plugin. There are no options. Activate the plugin to enable. Deactivate to disable. 
-Version: 0.4.1
+Version: 0.5.0
 Author: Brandon Pfeiffer
 Author URI: http://brandonjp.com
 
