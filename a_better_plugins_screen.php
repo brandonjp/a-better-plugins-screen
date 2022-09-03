@@ -2,13 +2,22 @@
 /*
 Plugin Name: A Better Plugins Screen
 Plugin URI: https://github.com/brandonjp/a-better-plugins-screen
+GitHub Plugin URI: https://github.com/brandonjp/a-better-plugins-screen
 Description: On the plugins admin screen, this puts 'Deactivate' first and places a 'Settings' link second (if it can find one) under each active plugin. There are no options. Activate the plugin to enable. Deactivate to disable. 
-Version: 0.3.1
+Version: 0.4.1
 Author: Brandon Pfeiffer
 Author URI: http://brandonjp.com
 
 Text Domain: a-better-plugins-screen
 */
+
+
+// Require Dependencies: https://github.com/afragen/wp-dependency-installer#description
+require_once __DIR__ . '/vendor/autoload.php';
+add_action( 'plugins_loaded', function() {
+  WP_Dependency_Installer::instance( __DIR__ )->run();
+});
+
 
 
 function a_better_plugins_screen($screen)
